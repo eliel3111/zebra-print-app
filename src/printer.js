@@ -1,17 +1,45 @@
-const net = require("net");
+const XLSX = require("xlsx");
+const fs = require("fs");
+const path = require("path");
 
-function printZebra(ip, zpl) {
-  return new Promise((resolve, reject) => {
-    const client = new net.Socket();
+const excelPath = path.join(__dirname, "data.xlsx");
+const outputPath = path.join(__dirname, "output.zpl");
 
-    client.connect(9100, ip, () => {
-      client.write(zpl);
-      client.end();
-    });
-
-    client.on("close", () => resolve("Impreso correctamente"));
-    client.on("error", (err) => reject(err));
-  });
+if (!fs.existsSync(excelPath)) {
+  console.log("No se encontró el archivo data.xlsx en la carpeta src.");
+  process.exit(1);
 }
 
-module.exports = { printZebra };
+const workbook = XLSX.readFile(excelPath);
+const sheet = workbook.Sheets[workbook.SheetNames[0]];
+const data = XLSX.utils.sheet_to_json(sheet);
+
+fs.writeFileSync(outputPath, "", "utf8");
+
+data.forEach((row) => {
+  const location = row["Nombre de la ubicación"] || "";
+
+  if (!location) return;
+
+  const zpl = `
+^XA
+^PW600
+^LL400
+
+^FX ===== TEXTO =====
+^CF0,170,82
+^FO35,50^FB540,1,0,C^FD${location}^FS
+
+^FX ===== BARCODE (más ancho + más a la derecha) =====
+^BY3,2,120
+^FO70,210^BCN,120,N,N,N
+^FD${location}^FS
+
+^XZ
+`;
+
+  fs.appendFileSync(outputPath, zpl, "utf8");
+});
+
+console.log("Archivo output.zpl generado correctamente.");
+console.log(outputPath);

@@ -1,0 +1,1038 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zebra Print App</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      font-family: Arial, sans-serif;
+      background: #eef2f7;
+      color: #0f172a;
+    }
+
+    body {
+      padding: 18px;
+      overflow-y: auto;
+    }
+
+    .app-shell {
+      width: 100%;
+      max-width: 1500px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 22px;
+      box-shadow: 0 16px 40px rgba(15, 23, 42, 0.14);
+      padding: 22px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 16px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 34px;
+      color: #0f172a;
+      letter-spacing: -0.5px;
+    }
+
+    .brand p {
+      margin: 6px 0 0 0;
+      color: #64748b;
+      font-size: 15px;
+    }
+
+    #message {
+      display: none;
+      padding: 14px 18px;
+      border-radius: 14px;
+      background: #eef2ff;
+      color: #1e40af;
+      font-weight: 800;
+      font-size: 15px;
+      border: 1px solid #dbeafe;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 430px 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .left-column {
+      display: grid;
+      gap: 16px;
+    }
+
+    .right-column {
+      display: grid;
+      gap: 16px;
+    }
+
+    .card {
+      border: 1px solid #dbe3ef;
+      border-radius: 18px;
+      background: #f8fafc;
+      padding: 18px;
+    }
+
+    .card.white {
+      background: #ffffff;
+    }
+
+    .card h2 {
+      margin: 0 0 8px 0;
+      font-size: 22px;
+      color: #0f172a;
+    }
+
+    .card p.small {
+      margin: 0 0 14px 0;
+      color: #64748b;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .section-number {
+      color: #2563eb;
+      font-weight: 900;
+      margin-right: 4px;
+    }
+
+    .stack {
+      display: grid;
+      gap: 14px;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 800;
+      color: #334155;
+      margin-bottom: 6px;
+    }
+
+    input[type="file"],
+    input[type="number"],
+    select {
+      width: 100%;
+      min-height: 44px;
+      padding: 10px 12px;
+      background: white;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      font-size: 15px;
+      outline: none;
+    }
+
+    input[type="file"]:focus,
+    input[type="number"]:focus,
+    select:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      min-height: 44px;
+      padding: 11px 18px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 900;
+      box-shadow: 0 8px 16px rgba(37, 99, 235, 0.22);
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    button:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .check-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .check-grid label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0;
+      padding: 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      background: white;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .check-grid input {
+      width: 18px;
+      height: 18px;
+    }
+
+    .editor-fields {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .field-group {
+      border: 1px solid #e2e8f0;
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 14px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .field-group-title {
+      font-size: 15px;
+      font-weight: 900;
+      color: #1e293b;
+      margin: 0;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .hint {
+      margin: 0;
+      font-size: 13px;
+      color: #64748b;
+      line-height: 1.4;
+    }
+
+    .preview-card {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 16px;
+      min-height: 560px;
+    }
+
+    .preview-area {
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .preview-wrap {
+      background: #e5e7eb;
+      border-radius: 20px;
+      padding: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 470px;
+      overflow: auto;
+      border: 1px solid #d1d5db;
+    }
+
+    .summary-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      background: #ffffff;
+      padding: 18px;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 12px;
+      align-self: stretch;
+    }
+
+    .summary-card h2 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    .summary {
+      display: grid;
+      gap: 12px;
+      align-content: start;
+      font-size: 15px;
+      color: #475569;
+      line-height: 1.45;
+    }
+
+    .summary p {
+      margin: 0;
+      padding: 12px;
+      background: #f8fafc;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .summary strong {
+      color: #0f172a;
+      display: block;
+      margin-bottom: 3px;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .label-preview {
+      position: relative;
+      width: 609px;
+      height: 406px;
+      background: white;
+      border: 2px solid #111827;
+      border-radius: 14px;
+      box-sizing: border-box;
+      transform-origin: center center;
+      transform: scale(0.78);
+      flex: 0 0 auto;
+    }
+
+    .label-top {
+      position: absolute;
+      left: 0;
+      width: 609px;
+      text-align: center;
+      font-weight: 900;
+      line-height: 1;
+      color: #111827;
+      white-space: nowrap;
+    }
+
+    .label-bottom {
+      position: absolute;
+      left: 0;
+      width: 609px;
+      text-align: center;
+      font-weight: 800;
+      line-height: 1;
+      color: #111827;
+      white-space: nowrap;
+    }
+
+    .fake-barcode {
+      position: absolute;
+      background:
+        repeating-linear-gradient(
+          90deg,
+          #111827 0px,
+          #111827 4px,
+          #ffffff 4px,
+          #ffffff 7px,
+          #111827 7px,
+          #111827 10px,
+          #ffffff 10px,
+          #ffffff 15px
+        );
+    }
+
+    .zpl-card {
+      display: grid;
+      gap: 12px;
+    }
+
+    pre {
+      margin: 0;
+      background: #020617;
+      color: #d1d5db;
+      padding: 16px;
+      border-radius: 16px;
+      overflow: auto;
+      font-size: 14px;
+      min-height: 260px;
+      max-height: 360px;
+      line-height: 1.45;
+    }
+
+    @media (max-width: 1250px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .preview-card {
+        grid-template-columns: 1fr;
+      }
+
+      .summary-card {
+        align-self: auto;
+      }
+    }
+
+    @media (max-width: 700px) {
+      body {
+        padding: 10px;
+      }
+
+      .app-shell {
+        padding: 14px;
+        border-radius: 16px;
+      }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .brand h1 {
+        font-size: 28px;
+      }
+
+      .row-2,
+      .check-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .preview-wrap {
+        min-height: 360px;
+      }
+
+      .label-preview {
+        transform: scale(0.55);
+      }
+    }
+      .drag-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: #ffffff;
+      border: 1px solid #dbe3ef;
+      border-radius: 16px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+    }
+
+    .drag-toolbar-left {
+      display: grid;
+      gap: 3px;
+    }
+
+    .drag-toolbar-title {
+      font-size: 15px;
+      font-weight: 900;
+      color: #0f172a;
+    }
+
+    .drag-toolbar-subtitle {
+      font-size: 13px;
+      color: #64748b;
+    }
+
+    .drag-toolbar-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .drag-toolbar-actions button {
+      min-height: 38px;
+      padding: 8px 12px;
+      font-size: 13px;
+      border-radius: 10px;
+      box-shadow: none;
+    }
+
+    .btn-light {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    .btn-light:hover {
+      background: #cbd5e1;
+    }
+
+    .editable-selected {
+      outline: 4px solid #2563eb;
+      outline-offset: 6px;
+    }
+
+    #previewBarcode {
+      cursor: grab;
+    }
+
+    #previewText {
+      cursor: grab;
+    }
+
+    #previewBarcode:active {
+      cursor: grabbing;
+    }
+
+    #previewText:active {
+      cursor: grabbing;
+    }
+</style>
+</head>
+
+<body>
+  <div class="app-shell">
+    <div class="topbar">
+      <div class="brand">
+        <h1>Zebra Print App</h1>
+        <p>Genera, ajusta, visualiza e imprime etiquetas ZPL para tu impresora Zebra.</p>
+      </div>
+    </div>
+
+    <div id="message"></div>
+
+    <div class="layout">
+      <div class="left-column">
+        <div class="card white">
+          <h2><span class="section-number">1.</span> Archivo Excel</h2>
+          <p class="small">Selecciona el archivo con las ubicaciones que deseas imprimir.</p>
+
+          <div class="stack">
+            <input type="file" id="excelFile" accept=".xlsx,.xls" />
+
+            <div class="btn-row">
+              <button onclick="subirExcel()">Subir y previsualizar</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card white">
+          <h2><span class="section-number">2.</span> Impresión</h2>
+          <p class="small">Define si vas a imprimir todas las etiquetas o solo una cantidad específica.</p>
+
+          <div class="stack">
+            <div>
+              <label>Qué deseas imprimir?</label>
+              <select id="modoImpresion" onchange="cambiarModo()">
+                <option value="todas">Todas las etiquetas del Excel</option>
+                <option value="cantidad">Solo una cantidad específica</option>
+              </select>
+            </div>
+
+            <div id="cantidadBox" style="display:none;">
+              <label>Cantidad a imprimir</label>
+              <input type="number" id="cantidadEtiquetas" min="1" value="1" oninput="prepararVista()" />
+            </div>
+
+            <div class="btn-row">
+              <button id="btnPreparar" onclick="prepararVista()" disabled>Actualizar vista</button>
+              <button id="btnImprimir" onclick="imprimir()" disabled>Imprimir etiquetas</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2><span class="section-number">3.</span> Editor de etiqueta</h2>
+          <p class="small">Ajusta la posición y tamaño de los elementos de la etiqueta.</p>
+
+          <div class="stack">
+            <div class="check-grid">
+              <label>
+                <input type="checkbox" id="showTopText" checked onchange="actualizarEditor()" />
+                Mostrar texto superior
+              </label>
+
+              <label>
+                <input type="checkbox" id="showBottomText" onchange="actualizarEditor()" />
+                Mostrar texto inferior
+              </label>
+            </div>
+
+            <div class="editor-fields">
+              <div class="field-group">
+                <p class="field-group-title">Ajuste general</p>
+
+                <div>
+                  <label>Mover todo izquierda/derecha</label>
+<input type="number" id="globalX" value="0" oninput="actualizarEditor()" />
+
+                  <label>Escala de impresión</label>
+                  <input type="number" id="printScale" value="1" step="0.05" min="0.5" max="1.5" oninput="actualizarEditor()" />
+                </div>
+              </div>
+
+              <div class="field-group">
+                <p class="field-group-title">Texto superior</p>
+
+                <div>
+                  <label>Texto superior izquierda/derecha</label>
+                  <input type="number" id="textTopX" value="0" oninput="actualizarEditor()" />
+                </div>
+
+                <div class="row-2">
+                  <div>
+                    <label>Texto superior arriba/abajo</label>
+                    <input type="number" id="textTopY" value="85" oninput="actualizarEditor()" />
+                  </div>
+
+                  <div>
+                    <label>Tamaño texto superior</label>
+                    <input type="number" id="textTopSize" value="80" oninput="actualizarEditor()" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="field-group">
+                <p class="field-group-title">Código de barras</p>
+
+                <div class="row-2">
+                  <div>
+                    <label>Barcode izquierda/derecha</label>
+                    <input type="number" id="barcodeX" value="0" oninput="actualizarEditor()" />
+                  </div>
+
+                  <div>
+                    <label>Barcode arriba/abajo</label>
+                    <input type="number" id="barcodeY" value="180" oninput="actualizarEditor()" />
+                  </div>
+                </div>
+
+                <div class="row-2">
+                  <div>
+                    <label>Ancho del barcode</label>
+                    <input type="number" id="barcodeModule" value="2.95" step="0.1" min="1" max="6" oninput="actualizarEditor()" />
+                  </div>
+
+                  <div>
+                    <label>Alto del barcode</label>
+                    <input type="number" id="barcodeHeight" value="160" oninput="actualizarEditor()" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="field-group">
+                <p class="field-group-title">Texto inferior</p>
+
+                <div class="row-2">
+                  <div>
+                    <label>Texto inferior arriba/abajo</label>
+                    <input type="number" id="textBottomY" value="310" oninput="actualizarEditor()" />
+                  </div>
+
+                  <div>
+                    <label>Tamaño texto inferior</label>
+                    <input type="number" id="textBottomSize" value="30" oninput="actualizarEditor()" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <p class="hint">
+              Valores negativos mueven hacia la izquierda. Valores positivos mueven hacia la derecha.
+              Si la pantalla no cabe completa, baja un poco con el scroll.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="right-column">
+        <div class="card preview-card">
+          <div class="preview-area">
+            <div>
+              <h2>Vista previa</h2>
+              <p class="small">Previsualización amplia de la primera etiqueta a imprimir.</p>
+            </div>
+
+            <div class="drag-toolbar" id="dragToolbar">
+                <div class="drag-toolbar-left">
+                  <div class="drag-toolbar-title">Editor visual</div>
+                  <div class="drag-toolbar-subtitle">Seleccionado: <span id="selectedElementLabel">Barcode</span>. Haz clic en un elemento y arrástralo con el mouse.</div>
+                </div>
+
+                <div class="drag-toolbar-actions">
+                  <button type="button" class="btn-light" onclick="reducirElementoSeleccionado()">- Reducir</button>
+                  <button type="button" onclick="agrandarElementoSeleccionado()">+ Agrandar</button>
+                </div>
+              </div>
+
+              <div class="preview-wrap">
+              <div class="label-preview" id="labelPreview">
+                <div class="label-top" id="previewText">---</div>
+                <div class="fake-barcode" id="previewBarcode"></div>
+                <div class="label-bottom" id="previewBottom">---</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="summary-card">
+            <div>
+              <h2>Resumen</h2>
+            </div>
+
+            <div class="summary">
+              <p><strong>Total en Excel</strong> <span id="totalExcel">0</span></p>
+              <p><strong>Etiquetas a imprimir</strong> <span id="totalEtiquetas">0</span></p>
+              <p><strong>Primera ubicación</strong> <span id="primeraUbicacion">Pendiente</span></p>
+              <p><strong>Estado</strong> <span id="estado">Esperando Excel</span></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card zpl-card">
+          <div>
+            <h2>ZPL de la primera etiqueta</h2>
+            <p class="small">Código que se enviará a la impresora para la primera etiqueta.</p>
+          </div>
+
+          <pre id="zplPreview">Aquí aparecerá el ZPL de la primera ubicación.</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let excelCargado = false;
+    let primeraUbicacionActual = "---";
+
+    function mostrarMensaje(texto) {
+      const message = document.getElementById("message");
+      message.innerText = texto;
+      message.style.display = "block";
+    }
+
+    function valorNumero(id) {
+      return parseFloat(document.getElementById(id).value) || 0;
+    }
+
+    function obtenerConfig() {
+      return {
+        showTopText: document.getElementById("showTopText").checked,
+        showBottomText: document.getElementById("showBottomText").checked,
+        globalX: valorNumero("globalX"),
+        printScale: valorNumero("printScale") || 1,
+        textTopX: valorNumero("textTopX"),
+        textTopY: valorNumero("textTopY"),
+        textTopSize: valorNumero("textTopSize"),
+        barcodeX: valorNumero("barcodeX"),
+        barcodeY: valorNumero("barcodeY"),
+        barcodeModule: valorNumero("barcodeModule"),
+        barcodeRatio: 2,
+        barcodeHeight: valorNumero("barcodeHeight"),
+        textBottomY: valorNumero("textBottomY"),
+        textBottomSize: valorNumero("textBottomSize"),
+      };
+    }
+
+    function obtenerOpciones() {
+      const modo = document.getElementById("modoImpresion").value;
+      const cantidad = document.getElementById("cantidadEtiquetas").value;
+
+      return {
+        modo,
+        cantidad,
+        config: obtenerConfig(),
+      };
+    }
+
+    function cambiarModo() {
+      const modo = document.getElementById("modoImpresion").value;
+      document.getElementById("cantidadBox").style.display = modo === "cantidad" ? "block" : "none";
+
+      if (excelCargado) prepararVista();
+    }
+
+    function actualizarEditor() {
+      const config = obtenerConfig();
+const texto = primeraUbicacionActual || "---";
+
+      const top = document.getElementById("previewText");
+      top.innerText = texto;
+      top.style.display = config.showTopText ? "block" : "none";
+      top.style.left = `${(config.globalX + config.textTopX) * config.printScale}px`;
+      top.style.top = `${config.textTopY * config.printScale}px`;
+      top.style.fontSize = `${config.textTopSize * config.printScale}px`;
+
+      const barcode = document.getElementById("previewBarcode");
+      const textTop = document.getElementById("previewText");
+      barcode.style.left = `${(config.barcodeX + config.globalX) * config.printScale}px`;
+      barcode.style.top = `${config.barcodeY * config.printScale}px`;
+      barcode.style.height = `${config.barcodeHeight * config.printScale}px`;
+
+      const anchoBarcode = ((texto.length + 3) * 11 + 13) * config.barcodeModule * config.printScale;
+      barcode.style.width = `${anchoBarcode}px`;
+
+      const bottom = document.getElementById("previewBottom");
+      bottom.innerText = texto;
+      bottom.style.display = config.showBottomText ? "block" : "none";
+      bottom.style.left = `${config.globalX * config.printScale}px`;
+      bottom.style.top = `${config.textBottomY * config.printScale}px`;
+      bottom.style.fontSize = `${config.textBottomSize * config.printScale}px`;
+
+      if (excelCargado) {
+        clearTimeout(window.prepararTimer);
+        window.prepararTimer = setTimeout(prepararVista, 400);
+      }
+    }
+
+    function actualizarPreview(data) {
+      document.getElementById("totalExcel").innerText = data.totalExcel || data.total || 0;
+      document.getElementById("totalEtiquetas").innerText = data.total || 0;
+      document.getElementById("primeraUbicacion").innerText = data.primeraUbicacion || "Pendiente";
+      document.getElementById("estado").innerText = data.ok ? "Listo para imprimir" : "Pendiente";
+
+      primeraUbicacionActual = data.primeraUbicacion || "---";
+
+      document.getElementById("zplPreview").innerText = data.primerZpl || "No hay ZPL generado.";
+
+      document.getElementById("btnImprimir").disabled = !data.ok;
+      document.getElementById("btnPreparar").disabled = !data.ok;
+
+      actualizarEditor();
+    }
+
+    async function subirExcel() {
+      const input = document.getElementById("excelFile");
+
+      if (!input.files.length) {
+        mostrarMensaje("Selecciona un archivo Excel primero.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("excel", input.files[0]);
+
+      mostrarMensaje("Cargando Excel y generando etiquetas...");
+
+      const response = await fetch("/subir-excel", {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await response.json();
+      mostrarMensaje(result.message);
+
+      if (result.ok) excelCargado = true;
+
+      actualizarPreview(result);
+    }
+
+    async function prepararVista() {
+      if (!excelCargado) return;
+
+      const opciones = obtenerOpciones();
+
+      const response = await fetch("/preparar", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(opciones),
+      });
+
+      const result = await response.json();
+      mostrarMensaje(result.message);
+      actualizarPreview(result);
+    }
+
+    async function imprimir() {
+      const opciones = obtenerOpciones();
+
+      mostrarMensaje("Enviando etiquetas a la Zebra...");
+
+      const response = await fetch("/imprimir", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(opciones),
+      });
+
+      const result = await response.json();
+      mostrarMensaje(result.message);
+
+      if (result.ok) actualizarPreview(result);
+    }
+
+        let elementoSeleccionado = "barcode";
+    let arrastrandoElemento = false;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let startBarcodeX = 0;
+    let startBarcodeY = 0;
+    let startTextTopX = 0;
+    let startTextTopY = 0;
+
+    function seleccionarElementoVisual(nombre) {
+      elementoSeleccionado = nombre;
+
+      const label = document.getElementById("selectedElementLabel");
+      if (label) {
+        label.innerText =
+          nombre === "barcode" ? "Barcode" :
+          nombre === "topText" ? "Texto superior" :
+          nombre;
+      }
+
+      document.getElementById("previewBarcode").classList.toggle("editable-selected", nombre === "barcode");
+      document.getElementById("previewText").classList.toggle("editable-selected", nombre === "topText");
+    }
+
+    function obtenerPuntoDentroEtiqueta(event) {
+      const labelPreview = document.getElementById("labelPreview");
+      const rect = labelPreview.getBoundingClientRect();
+
+      const scaleX = rect.width / 609;
+      const scaleY = rect.height / 406;
+
+      return {
+        x: (event.clientX - rect.left) / scaleX,
+        y: (event.clientY - rect.top) / scaleY,
+      };
+    }
+
+    function iniciarArrastreBarcode(event) {
+      event.preventDefault();
+
+      seleccionarElementoVisual("barcode");
+
+      const punto = obtenerPuntoDentroEtiqueta(event);
+      const config = obtenerConfig();
+
+      dragStartX = punto.x;
+      dragStartY = punto.y;
+      startBarcodeX = config.barcodeX;
+      startBarcodeY = config.barcodeY;
+
+      arrastrandoElemento = true;
+    }
+
+    function iniciarArrastreTextoSuperior(event) {
+      event.preventDefault();
+
+      seleccionarElementoVisual("topText");
+
+      const punto = obtenerPuntoDentroEtiqueta(event);
+      const config = obtenerConfig();
+
+      dragStartX = punto.x;
+      dragStartY = punto.y;
+      startTextTopX = config.textTopX || 0;
+      startTextTopY = config.textTopY || 0;
+
+      arrastrandoElemento = true;
+    }
+
+    function moverElementoVisual(event) {
+      if (!arrastrandoElemento) return;
+
+      const punto = obtenerPuntoDentroEtiqueta(event);
+      const config = obtenerConfig();
+      const escala = config.printScale || 1;
+
+      const deltaX = (punto.x - dragStartX) / escala;
+      const deltaY = (punto.y - dragStartY) / escala;
+
+      if (elementoSeleccionado === "barcode") {
+        document.getElementById("barcodeX").value = Math.round(startBarcodeX + deltaX);
+        document.getElementById("barcodeY").value = Math.round(startBarcodeY + deltaY);
+      }
+
+      if (elementoSeleccionado === "topText") {
+        document.getElementById("textTopX").value = Math.round(startTextTopX + deltaX);
+        document.getElementById("textTopY").value = Math.round(startTextTopY + deltaY);
+      }
+
+      actualizarEditor();
+    }
+
+    function terminarArrastreVisual() {
+      if (!arrastrandoElemento) return;
+
+      arrastrandoElemento = false;
+
+      if (excelCargado) {
+        prepararVista();
+      }
+    }
+
+    function agrandarElementoSeleccionado() {
+      if (elementoSeleccionado === "barcode") {
+        const barcodeModule = document.getElementById("barcodeModule");
+        const barcodeHeight = document.getElementById("barcodeHeight");
+
+        barcodeModule.value = (parseFloat(barcodeModule.value || "1") + 0.15).toFixed(2);
+        barcodeHeight.value = Math.round(parseFloat(barcodeHeight.value || "100") + 8);
+      }
+
+      if (elementoSeleccionado === "topText") {
+        const textTopSize = document.getElementById("textTopSize");
+        textTopSize.value = Math.round(parseFloat(textTopSize.value || "60") + 4);
+      }
+
+      actualizarEditor();
+
+      if (excelCargado) {
+        prepararVista();
+      }
+    }
+
+    function reducirElementoSeleccionado() {
+      if (elementoSeleccionado === "barcode") {
+        const barcodeModule = document.getElementById("barcodeModule");
+        const barcodeHeight = document.getElementById("barcodeHeight");
+
+        barcodeModule.value = Math.max(1, parseFloat(barcodeModule.value || "1") - 0.15).toFixed(2);
+        barcodeHeight.value = Math.max(40, Math.round(parseFloat(barcodeHeight.value || "100") - 8));
+      }
+
+      if (elementoSeleccionado === "topText") {
+        const textTopSize = document.getElementById("textTopSize");
+        textTopSize.value = Math.max(10, Math.round(parseFloat(textTopSize.value || "60") - 4));
+      }
+
+      actualizarEditor();
+
+      if (excelCargado) {
+        prepararVista();
+      }
+    }
+
+    function iniciarEditorVisual() {
+      const barcode = document.getElementById("previewBarcode");
+      const textTop = document.getElementById("previewText");
+
+      barcode.addEventListener("mousedown", iniciarArrastreBarcode);
+      textTop.addEventListener("mousedown", iniciarArrastreTextoSuperior);
+      document.addEventListener("mousemove", moverElementoVisual);
+      document.addEventListener("mouseup", terminarArrastreVisual);
+
+      seleccionarElementoVisual("barcode");
+    }
+
+    iniciarEditorVisual();
+    actualizarEditor();
+  </script>
+</body>
+</html>
+
+
+
+
+
